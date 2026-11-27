@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digital Wallet Simulation System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6fb;--s1:#fff;--s2:#eaf0f8;--bd:#d9e2ef;--tx:#0e1a30;--mut:#566884;--ac:#0a9d6c;--acx:#fff;--gold:#b97d0c;--bad:#d4443b;--info:#2f6fe0;--glow:rgba(10,157,108,.12);--hero:#0e1a30;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=dark]{--bg:#0a0f1c;--s1:#111a2e;--s2:#17233b;--bd:#243250;--tx:#eaf0fb;--mut:#93a3c0;--ac:#34e0a1;--acx:#06251a;--gold:#f6c453;--bad:#ff7070;--info:#78a9ff;--glow:rgba(52,224,161,.14);--hero:#17233b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}body.pm{zoom:1.22}
+h1,h2,h3,.disp{font-family:Sora,"DM Sans",system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+button{font:inherit;cursor:pointer;color:inherit}a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.btn{background:var(--ac);color:var(--acx);border:0;padding:10px 18px;border-radius:10px;font-weight:700;display:inline-flex;align-items:center;gap:8px;justify-content:center;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}.btn.red{background:var(--bad);color:#fff}.btn.sm{padding:5px 11px;font-size:13px;border-radius:8px}.btn.blk{width:100%}
+.nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:12px 28px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+.logo{display:flex;align-items:center;gap:10px;font-family:Sora,sans-serif;font-weight:700;font-size:16px}.logo i{width:32px;height:32px;border-radius:9px;background:var(--ac);color:var(--acx);display:grid;place-items:center}.sp{flex:1}
+.chip{border:1px solid var(--bd);background:var(--s1);padding:3px 11px;border-radius:99px;font-size:12px;color:var(--mut);font-weight:600}
+.ib{width:36px;height:36px;border-radius:10px;border:1px solid var(--bd);background:var(--s1);display:grid;place-items:center}
+.hero{max-width:1200px;margin:0 auto;padding:56px 28px 40px;display:grid;grid-template-columns:1.15fr 1fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.05;font-weight:800}.hero p.lead{font-size:18px;color:var(--mut);max-width:560px;margin:18px 0 26px}
+.kpis{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px}.kpis b{font:700 26px Sora,sans-serif;display:block}.kpis span{color:var(--mut);font-size:13px}
+.wc{margin-top:34px;width:min(100%,380px);aspect-ratio:1.6;border-radius:20px;padding:22px;color:#fff;background:linear-gradient(135deg,#0d6e55,#126b9c 60%,#27428f);box-shadow:0 30px 60px -20px rgba(18,107,156,.55);display:flex;flex-direction:column;justify-content:space-between;animation:fl 6s ease-in-out infinite;transform:rotate(-3deg)}
+@keyframes fl{50%{transform:rotate(-1deg) translateY(-8px)}}
+.wc .chipx{width:40px;height:30px;border-radius:6px;background:linear-gradient(135deg,#f6d77a,#c99a2e)}.wc small{opacity:.8}.wc .n{font:600 18px Sora,sans-serif;letter-spacing:.14em}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:22px;margin-bottom:16px}
+.auth{box-shadow:0 30px 80px -30px var(--glow),0 0 0 6px var(--glow)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--s2);border-radius:11px;padding:4px;margin-bottom:10px}.tabs button{border:0;background:none;padding:9px;border-radius:8px;font-weight:700;color:var(--mut)}.tabs button.on{background:var(--s1);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+label{display:block;font-weight:600;font-size:13px;margin:12px 0 5px;color:var(--mut)}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}input:focus,select:focus{border-color:var(--ac);outline:0;box-shadow:0 0 0 3px var(--glow)}
+.note{background:var(--s2);border-left:3px solid var(--ac);padding:10px 14px;border-radius:8px;font-size:13px;color:var(--mut);margin:14px 0}
+.demo{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.sec{max-width:1200px;margin:0 auto;padding:40px 28px}.sec h2{font-size:clamp(24px,3vw,34px);margin-bottom:8px}.sec .sub{color:var(--mut);max-width:640px;margin:0 0 26px}
+.layers{display:grid;gap:10px}.layer{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:center;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px 20px}
+.layer:nth-child(1){border-left:4px solid var(--info)}.layer:nth-child(2){border-left:4px solid var(--ac)}.layer:nth-child(3){border-left:4px solid var(--gold)}.layer:nth-child(4){border-left:4px solid var(--bad)}
+.layer b{font-family:Sora,sans-serif}.layer span{color:var(--mut);font-size:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.two .card ul{margin:10px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}.two li{display:flex;gap:8px;align-items:center;font-size:14px}.two li:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ac)}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.flow .st{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:8px 14px;font-weight:600;font-size:14px}.flow .ar{color:var(--ac);font-weight:700}.flow .st.in{border-color:var(--ac)}.flow .st.ex{border-color:var(--gold)}
+.foot{text-align:center;color:var(--mut);font-size:13px;padding:26px}
+/* app */
+.wrap{display:flex;min-height:calc(100vh - 62px)}.side{width:236px;background:var(--s1);border-right:1px solid var(--bd);padding:16px 12px;flex:none;position:sticky;top:62px;align-self:flex-start;height:calc(100vh - 62px);overflow:auto}
+.side small{display:block;color:var(--mut);padding:8px 12px;font-size:12px;font-weight:700}.side button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:10px;color:var(--mut);font-weight:600;margin-bottom:2px}.side button:hover{background:var(--s2);color:var(--tx)}.side button.on{background:var(--glow);color:var(--ac)}
+main{flex:1;padding:28px 32px;min-width:0;max-width:1180px}main h1{font-size:28px}.sub{color:var(--mut);margin:4px 0 22px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:16px}.g2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.bal{border-radius:18px;padding:24px;color:#fff;background:linear-gradient(135deg,#0d6e55,#126b9c 60%,#27428f);position:relative;overflow:hidden}.bal small{opacity:.8;font-weight:600}.bal .v{font:800 38px Sora,sans-serif;margin:6px 0}.bal:after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.1)}
+.stat small{color:var(--mut);font-weight:600}.stat .v{font:700 26px Sora,sans-serif;margin-top:4px}.stat{margin:0}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}.qa button{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:600}.qa button:hover{border-color:var(--ac);color:var(--ac)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}th{text-align:left;color:var(--mut);font-size:12px;font-weight:600;padding:8px;border-bottom:1px solid var(--bd)}td{padding:11px 8px;border-bottom:1px solid var(--bd)}tr:last-child td{border:0}
+.pill{padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--s2)}.SUCCESS,.APPROVED,.ACTIVE,.VERIFIED{background:color-mix(in srgb,var(--ac) 18%,transparent);color:var(--ac)}.FAILED,.REJECTED,.BLOCKED,.FROZEN{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}.PENDING{background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold)}.REVERSED{background:color-mix(in srgb,var(--info) 18%,transparent);color:var(--info)}
+.in{color:var(--ac);font-weight:700}.out{color:var(--bad);font-weight:700}
+.mt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.mt button{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:left;font-weight:600;display:flex;gap:10px;align-items:center}.mt button.on{border-color:var(--ac);background:var(--glow)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd);gap:10px}.row:last-child{border:0}.bar{height:8px;border-radius:9px;background:var(--s2);overflow:hidden;flex:1;min-width:60px}.bar i{display:block;height:100%;background:var(--ac);border-radius:9px}
+.lg{display:flex;flex-direction:column;gap:7px;font-size:13px}.lg span{display:flex;align-items:center;gap:8px}.lg i{width:10px;height:10px;border-radius:3px}
+.modal{position:fixed;inset:0;background:rgba(3,8,18,.7);backdrop-filter:blur(4px);display:grid;place-items:center;padding:20px;z-index:40}.modal .card{max-width:380px;width:100%;margin:0;text-align:center}
+.scan{width:200px;height:200px;margin:14px auto;border-radius:14px;border:2px solid var(--ac);position:relative;overflow:hidden;background:repeating-conic-gradient(var(--s2) 0 25%,var(--bg) 0 50%) 0 0/24px 24px}.scan:after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--ac);box-shadow:0 0 18px var(--ac);animation:sc 1.4s ease-in-out infinite alternate}@keyframes sc{from{top:0}to{top:calc(100% - 3px)}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:12px 20px;border-radius:12px;z-index:50;max-width:90%;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.sc2{display:flex;align-items:center;gap:20px}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:32px}.two,.g2{grid-template-columns:1fr}.layer{grid-template-columns:1fr;gap:4px}.wrap{flex-direction:column}.side{width:100%;height:auto;position:static;display:flex;overflow-x:auto;gap:4px;padding:8px;border-right:0;border-bottom:1px solid var(--bd)}.side small{display:none}.side button{white-space:nowrap;width:auto;margin:0}main{padding:18px}.nav{padding:10px 16px}.two .card ul{grid-template-columns:1fr}}
+@media print{.nav,.side,.noprint,.foot,.toast{display:none!important}.wrap{display:block}body{background:#fff;color:#000}:root{--s1:#fff;--tx:#000;--bd:#ccc;--mut:#444}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="app"></div><div id="modal"></div>
+<script>
+const $=s=>document.querySelector(s),R=n=>'₹'+Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const H=s=>{let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return 'h'+h.toString(16)};
+const now=()=>new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+const P={dash:'M3 12l9-9 9 9M5 10v10h14V10',add:'M12 5v14M5 12h14',tr:'M7 7h13l-4-4M17 17H4l4 4',pay:'M3 7h18v12H3zM3 11h18',hist:'M12 7v5l3 2M21 12a9 9 0 11-3-6.7',ref:'M3 12a9 9 0 109-9M3 4v5h5',rfd:'M9 14l-4-4 4-4M5 10h9a5 5 0 010 10h-2',stmt:'M6 3h9l4 4v14H6zM9 12h7M9 16h7',sec:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',usr:'M16 11a3 3 0 100-6M8 11a3 3 0 100-6M2 20c0-3 3-5 6-5s6 2 6 5M16 15c3 0 6 2 6 5',wal:'M3 7h16a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 7l12-3v3M17 14h2',rep:'M4 20V10M10 20V4M16 20v-7M22 20H2',mon:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 100 6',scan:'M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M4 12h16',out:'M9 4H5v16h4M16 8l4 4-4 4M20 12H9',moon:'M20 14A8 8 0 1110 4a7 7 0 0010 10z',tv:'M3 5h18v12H3zM8 21h8M12 17v4',food:'M6 3v8a3 3 0 006 0V3M9 3v18M18 3c-2 2-3 5-3 8h3v10',book:'M4 4h7a3 3 0 013 3v13a2 2 0 00-2-2H4zM20 4h-7',home:'M3 11l9-8 9 8v9H3zM10 20v-6h4v6',metro:'M6 3h12v13H6zM6 11h12M9 20l-2 2M15 20l2 2'};
+const I=(k,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24"><path d="${P[k]}"/></svg>`;
+const MER=[['Campus Canteen','food','#f6c453'],['Online Bookstore','book','#78a9ff'],['Hostel Fees Portal','home','#34e0a1'],['Metro Recharge','metro','#ff8fb1']];
+function seed(){return{seq:9,rseq:1,users:[
+{id:'U001',name:'Demo User',email:'demo@wallet.edu',phone:'9876543210',pw:H('pass123'),pin:H('1234'),role:'Customer',kyc:'VERIFIED',blocked:false},
+{id:'U002',name:'Riya Sharma',email:'riya@wallet.edu',phone:'9123456780',pw:H('pass123'),pin:H('4321'),role:'Customer',kyc:'VERIFIED',blocked:false},
+{id:'A001',name:'System Admin',email:'admin@wallet.edu',phone:'9000000000',pw:H('admin123'),pin:'',role:'Admin',kyc:'-',blocked:false}],
+wallets:{U001:{id:'W-U001',bal:4380,status:'ACTIVE'},U002:{id:'W-U002',bal:1750,status:'ACTIVE'}},
+tx:[{id:'TXN-00008',type:'Transfer',from:'U002',to:'U001',amt:250,st:'SUCCESS',ts:'12 Nov 2026, 6:20 pm'},{id:'TXN-00007',type:'Payment',from:'U001',to:'Metro Recharge',amt:300,st:'SUCCESS',ts:'10 Nov 2026, 8:05 am'},{id:'TXN-00006',type:'Payment',from:'U001',to:'Online Bookstore',amt:450,st:'SUCCESS',ts:'6 Nov 2026, 3:40 pm'},{id:'TXN-00005',type:'Payment',from:'U001',to:'Campus Canteen',amt:120,st:'SUCCESS',ts:'3 Nov 2026, 1:15 pm'},{id:'TXN-00004',type:'Add Money',from:'',to:'U002',amt:2000,st:'SUCCESS',ts:'1 Nov 2026, 10:05 am'},{id:'TXN-00003',type:'Add Money',from:'',to:'U001',amt:5000,st:'SUCCESS',ts:'1 Nov 2026, 10:00 am'}],refunds:[]}}
+let S;try{S=JSON.parse(localStorage.getItem('dwsim3'))||seed()}catch(e){S=seed()}
+const save=()=>{try{localStorage.setItem('dwsim3',JSON.stringify(S))}catch(e){}};
+let me=null,view='dash',mode='login',filt='ALL',q='',merch=0,LIMIT=25000;
+const U=id=>S.users.find(u=>u.id===id),nm=id=>U(id)?U(id).name:(id||'—');
+const nid=()=>'TXN-'+String(S.seq++).padStart(5,'0');
+function toast(m){document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3400)}
+function rec(type,from,to,amt,st){const t={id:nid(),type,from,to,amt,st,ts:now()};S.tx.unshift(t);save();return t}
+const mine=()=>S.tx.filter(t=>t.from===me.id||t.to===me.id);
+const pill=s=>`<span class="pill ${s}">${s}</span>`;
+function txRows(list,admin){return list.length?`<div class="tw"><table><tr><th>Reference</th><th>Type</th>${admin?'<th>From</th><th>To</th>':'<th>Party</th>'}<th>Amount</th><th>Status</th><th>Time</th></tr>`+list.map(t=>{const o=t.from===(me&&me.id);return`<tr><td>${t.id}</td><td>${t.type}</td>${admin?`<td>${E(nm(t.from))}</td><td>${E(nm(t.to))}</td>`:`<td>${E(o?nm(t.to):nm(t.from))}</td>`}<td class="${admin?'':o?'out':'in'}">${admin?'':o?'− ':'+ '}${R(t.amt)}</td><td>${pill(t.st)}</td><td>${t.ts}</td></tr>`}).join('')+'</table></div>':'<p class="sub">No transactions match. Add money or make a payment to get started.</p>'}
+/* charts */
+function donut(items){const tot=items.reduce((a,x)=>a+x.v,0)||1;let off=0;const r=52,c=2*Math.PI*r;
+const seg=items.filter(x=>x.v>0).map(x=>{const l=x.v/tot*c,s=`<circle r="${r}" cx="70" cy="70" fill="none" stroke="${x.c}" stroke-width="18" stroke-dasharray="${l} ${c-l}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=l;return s}).join('');
+return`<div class="sc2"><svg width="140" height="140" viewBox="0 0 140 140"><circle r="${r}" cx="70" cy="70" fill="none" stroke="var(--s2)" stroke-width="18"/>${seg}<text x="70" y="68" text-anchor="middle" fill="var(--tx)" font-family="Sora" font-weight="700" font-size="15">${R(tot).replace('.00','')}</text><text x="70" y="86" text-anchor="middle" fill="var(--mut)" font-size="10">total</text></svg><div class="lg">${items.map(x=>`<span><i style="background:${x.c}"></i>${x.l} · ${R(x.v).replace('.00','')}</span>`).join('')}</div></div>`}
+function bars(list){const d=list.slice(0,8).reverse();if(!d.length)return'<p class="sub">No activity yet.</p>';const mx=Math.max(...d.map(t=>t.amt));
+return`<svg viewBox="0 0 ${d.length*52} 150" width="100%" height="170" role="img" aria-label="Recent cash flow">${d.map((t,i)=>{const h=Math.max(6,t.amt/mx*110),o=t.from===me.id;return`<rect x="${i*52+8}" y="${125-h}" width="34" height="${h}" rx="6" fill="${o?'var(--bad)':'var(--ac)'}" opacity=".85"/><text x="${i*52+25}" y="142" text-anchor="middle" fill="var(--mut)" font-size="9">${t.id.slice(-2)}</text>`}).join('')}</svg>`}
+/* auth */
+function auth(){const reg=mode==='reg';
+return`<nav class="nav"><div class="logo"><i>${I('wal')}</i>Digital Wallet Simulation</div><span class="sp"></span><span class="chip">Academic project</span>${themeBtn()}</nav>
+<section class="hero"><div><span class="chip">Software Engineering Project</span><h1 style="margin-top:16px">See every rupee move through the system.</h1>
+<p class="lead">A safe, virtual wallet platform that shows how money transfers, payments and refunds work behind the screen. No bank, UPI, card network or payment gateway is connected.</p>
+<div class="kpis"><div><b>14</b><span>Use cases</span></div><div><b>2</b><span>User roles</span></div><div><b>4</b><span>Architecture layers</span></div><div><b>100%</b><span>Virtual money</span></div></div>
+<div class="wc"><div style="display:flex;justify-content:space-between"><b class="disp">◈ Wallet</b><span class="chipx"></span></div><div class="n">W-U001 •••• 2026</div><div style="display:flex;justify-content:space-between"><div><small>Account holder</small><div>Demo User</div></div><div style="text-align:right"><small>Balance</small><div class="disp">₹4,380.00</div></div></div></div></div>
+<div class="card auth"><div class="tabs"><button class="${reg?'':'on'}" onclick="mode='login';draw()">Login</button><button class="${reg?'on':''}" onclick="mode='reg';draw()">Register</button></div>
+${reg?`<label>Full name</label><input id="rn" autocomplete="name"><label>Phone</label><input id="rp" inputmode="numeric">`:''}
+<label>Email</label><input id="em" type="email" placeholder="you@example.com"><label>Password</label><input id="pw" type="password" onkeydown="if(event.key==='Enter')${reg?'doReg()':'doLogin()'}">
+${reg?`<label>4-digit transaction PIN</label><input id="rpin" type="password" maxlength="4" inputmode="numeric">`:''}
+<div style="margin-top:16px"><button class="btn blk" onclick="${reg?'doReg()':'doLogin()'}">${reg?'Create account and wallet':'Log in'}</button></div>
+${reg?'':`<div class="note"><b>Try a demo account</b> (passwords are stored as hashes)<div class="demo"><button class="btn alt sm" onclick="fill('demo@wallet.edu','pass123')">Customer</button><button class="btn alt sm" onclick="fill('admin@wallet.edu','admin123')">Admin</button></div><small>Customer PIN: 1234</small></div>`}</div></section>
+<section class="sec"><h2>Built in four layers</h2><p class="sub">Each layer has one job, so a change in one place never breaks the others.</p><div class="layers">
+<div class="layer"><b>Presentation layer</b><span>Login, dashboard, forms and charts that customers and admins see.</span></div>
+<div class="layer"><b>Application layer</b><span>Business rules: balance checks, PIN verification, limits and refunds.</span></div>
+<div class="layer"><b>Data access layer</b><span>Reads and writes users, wallets and transactions in one place.</span></div>
+<div class="layer"><b>Database layer</b><span>Stores every account, wallet balance and transaction record.</span></div></div></section>
+<section class="sec"><h2>What each role can do</h2><p class="sub">Customers move money. Admins keep the system safe.</p><div class="two">
+<div class="card"><h3>Customer</h3><ul><li>Register and log in</li><li>Add money</li><li>Transfer money</li><li>Make payments</li><li>Scan and pay</li><li>View balance</li><li>Transaction history</li><li>Request refund</li><li>Download statement</li><li>Security settings</li></ul></div>
+<div class="card"><h3>Administrator</h3><ul><li>Manage users</li><li>Monitor transactions</li><li>Manage wallets</li><li>Block accounts</li><li>Process refunds</li><li>Generate reports</li></ul></div></div>
+<div class="card" style="margin-top:16px"><h3 style="margin-bottom:14px">Use-case relationships</h3><div class="flow"><span class="st">Transfer Money</span><span class="ar">include</span><span class="st in">Verify PIN</span><span style="width:24px"></span><span class="st">Make Payment</span><span class="ar">include</span><span class="st in">Check Balance</span><span style="width:24px"></span><span class="st">Request Refund</span><span class="ar" style="color:var(--gold)">extend</span><span class="st ex">Process Refund</span></div></div></section>
+<div class="foot">Simulation only. All amounts are virtual examples. <a href="#" onclick="resetAll();return false">Reset demo data</a></div>`}
+function themeBtn(){return`<button class="ib" title="Presentation mode (larger text)" aria-label="Presentation mode" onclick="document.body.classList.toggle('pm')">${I('tv')}</button><button class="ib" title="Switch light or dark theme" aria-label="Switch theme" onclick="const d=document.documentElement;d.dataset.theme=d.dataset.theme==='dark'?'light':'dark'">${I('moon')}</button>`}
+const fill=(e,p)=>{$('#em').value=e;$('#pw').value=p};
+function doLogin(){const u=S.users.find(x=>x.email===$('#em').value.trim().toLowerCase());
+if(!u||u.pw!==H($('#pw').value))return toast('Wrong email or password. Check both and try again.');
+if(u.blocked)return toast('An administrator has blocked this account.');
+me=u;view=u.role==='Admin'?'rep':'dash';draw()}
+function doReg(){const n=$('#rn').value.trim(),e=$('#em').value.trim().toLowerCase(),p=$('#pw').value,pin=$('#rpin').value;
+if(!n||!e.includes('@')||p.length<6||!/^\d{4}$/.test(pin))return toast('Enter your name, a valid email, a password of 6+ characters and a 4-digit PIN.');
+if(S.users.some(u=>u.email===e))return toast('This email is already registered. Log in instead.');
+const id='U'+String(S.users.length+1).padStart(3,'0');S.users.push({id,name:n,email:e,phone:$('#rp').value,pw:H(p),pin:H(pin),role:'Customer',kyc:'PENDING',blocked:false});
+S.wallets[id]={id:'W-'+id,bal:0,status:'ACTIVE'};save();me=S.users.at(-1);view='dash';draw();toast('Account and wallet created.')}
+function resetAll(){S=seed();save();toast('Demo data reset.')}
+/* shell */
+const CM=[['dash','Dashboard'],['add','Add Money'],['tr','Transfer Money'],['pay','Pay and Scan'],['hist','Transaction History'],['ref','Request Refund'],['stmt','Download Statement'],['sec','Security']];
+const AM=[['rep','Reports'],['usr','Manage Users'],['wal','Manage Wallets'],['mon','Monitor Transactions'],['rfd','Process Refunds']];
+function draw(){if(!me){$('#app').innerHTML=auth();return}
+const m=me.role==='Admin'?AM:CM;
+$('#app').innerHTML=`<nav class="nav"><div class="logo"><i>${I('wal')}</i>Digital Wallet</div><span class="chip">${me.role}</span><span class="sp"></span><b class="noprint">${E(me.name)}</b>${themeBtn()}<button class="btn alt sm" onclick="me=null;draw()">${I('out')}Log out</button></nav>
+<div class="wrap"><aside class="side"><small>${me.role==='Admin'?'Admin console':'Wallet menu'}</small>${m.map(([k,l])=>`<button class="${view===k?'on':''}" onclick="view='${k}';draw()">${I(k==='pay'?'pay':k)}${l}</button>`).join('')}</aside><main>${V[view]()}</main></div>`;
+const b=$('.bal .v');if(b){const to=+b.dataset.v,t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/900);b.textContent=R(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)}}
+const W=()=>S.wallets[me.id];
+const head=(t,s)=>`<h1>${t}</h1><p class="sub">${s}</p>`;
+const sum=(l,f)=>l.filter(f).reduce((a,t)=>a+t.amt,0);
+const V={
+dash(){const l=mine().filter(t=>t.st==='SUCCESS'),inn=sum(l,t=>t.to===me.id),out=sum(l,t=>t.from===me.id&&t.type!=='Add Money'),pays=l.filter(t=>t.type==='Payment'&&t.from===me.id);
+const cats=MER.map(([n,,c])=>({l:n,v:sum(pays,t=>t.to===n),c}));
+return head('Welcome back, '+E(me.name.split(' ')[0]),'Your virtual wallet at a glance.')+`<div class="grid"><div class="bal"><small>Available virtual balance</small><div class="v" data-v="${W().bal}">${R(W().bal)}</div><small>Wallet ${W().id} · ${W().status}</small></div>
+<div class="card stat"><small>Money in</small><div class="v in">${R(inn)}</div></div><div class="card stat"><small>Money out</small><div class="v out">${R(out)}</div></div></div>
+<div class="qa">${[['add','Add Money'],['tr','Transfer'],['pay','Pay or Scan'],['stmt','Statement']].map(([k,l])=>`<button onclick="view='${k}';draw()">${I(k)}${l}</button>`).join('')}</div>
+<div class="g2"><div class="card"><h2 style="font-size:17px;margin-bottom:6px">Cash flow</h2><small style="color:var(--mut)">Last 8 transactions. Green is money in, red is money out.</small>${bars(l)}</div><div class="card"><h2 style="font-size:17px;margin-bottom:14px">Spending by merchant</h2>${donut(cats)}</div></div>
+<div class="card"><h2 style="font-size:17px;margin-bottom:10px">Recent transactions</h2>${txRows(mine().slice(0,5))}</div>`},
+add(){return head('Add Money','Credit simulated funds to your wallet.')+`<div class="card" style="max-width:520px"><label>Amount (₹)</label><input id="a" type="number" min="1" placeholder="500"><div class="demo">${[500,1000,2000,5000].map(v=>`<button class="btn alt sm" onclick="$('#a').value=${v}">+ ${v}</button>`).join('')}</div><div style="margin-top:18px"><button class="btn" onclick="addMoney()">Add virtual money</button></div></div>`},
+tr(){return head('Transfer Money','Debit the sender, credit the receiver and record the transfer in one atomic transaction.')+`<div class="card" style="max-width:560px"><label>Receiver email</label><input id="r" placeholder="riya@wallet.edu"><label>Amount (₹)</label><input id="a" type="number" min="1">
+<div class="note"><b>How it works:</b> validate receiver and amount → check balance → verify PIN → begin transaction → debit and credit → commit. Any failure rolls back, so no balance changes.</div><button class="btn" onclick="pinFor()">Continue</button></div>`},
+pay(){return head('Pay and Scan','Pay a merchant from your wallet. The balance check runs on every payment.')+`<div class="card" style="max-width:640px"><label>Choose a merchant</label><div class="mt">${MER.map(([n,ic],i)=>`<button class="${merch===i?'on':''}" onclick="merch=${i};draw()">${I(ic)}${n}</button>`).join('')}</div><label>Amount (₹)</label><input id="a" type="number" min="1">
+<div class="demo" style="margin-top:16px"><button class="btn" onclick="pay()">Pay now</button><button class="btn alt" onclick="scanQR()">${I('scan')}Scan merchant QR</button></div></div>`},
+hist(){const l=mine().filter(t=>(filt==='ALL'||t.st===filt)&&(!q||(t.id+t.type+nm(t.from)+nm(t.to)).toLowerCase().includes(q.toLowerCase())));
+return head('Transaction History','Sent, received and failed transactions.')+`<div class="card"><div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap"><input style="max-width:280px" placeholder="Search by reference, type or name" value="${E(q)}" oninput="q=this.value;clearTimeout(window.tq);window.tq=setTimeout(()=>{draw();const i=$('main input');i.focus();i.setSelectionRange(99,99)},250)"><select style="max-width:180px" onchange="filt=this.value;draw()">${['ALL','SUCCESS','FAILED','PENDING','REVERSED'].map(s=>`<option ${s===filt?'selected':''}>${s}</option>`).join('')}</select></div>${txRows(l)}</div>`},
+ref(){const ok=mine().filter(t=>t.from===me.id&&t.st==='SUCCESS'&&['Transfer','Payment'].includes(t.type)&&!S.refunds.some(r=>r.tx===t.id));
+return head('Request Refund','Submit a request. An administrator reviews it and approves or rejects it.')+`<div class="card" style="max-width:600px"><label>Transaction</label><select id="t">${ok.map(t=>`<option value="${t.id}">${t.id} · ${t.type} · ${R(t.amt)}</option>`).join('')||'<option value="">No eligible transactions</option>'}</select><label>Reason</label><input id="why" placeholder="Wrong receiver or duplicate payment">
+<div style="margin-top:18px"><button class="btn" onclick="reqRefund()">Submit request</button></div></div><div class="card"><h2 style="font-size:17px;margin-bottom:10px">My refund requests</h2>${rTable(S.refunds.filter(r=>r.by===me.id),false)}</div>`},
+stmt(){return head('Download Statement','Account statement for '+E(me.name)+', generated '+now())+`<div class="card"><div class="noprint demo" style="margin:0 0 14px"><button class="btn" onclick="window.print()">Print or save as PDF</button><button class="btn alt" onclick="csv()">Copy as CSV</button></div><p><b>Closing balance:</b> ${R(W().bal)}</p>${txRows(mine())}</div>`},
+sec(){return head('Security','Protections that keep every virtual rupee safe.')+`<div class="grid">${[['Transaction PIN','Required for every transfer. Stored only as a hash.'],['Per-transaction limit',R(LIMIT).replace('.00','')+' on transfers and payments. Larger amounts are rejected and logged.'],['Atomic transfers','Debit and credit commit together or roll back together.'],['Admin controls','Admins can freeze a wallet or block an account at any time.']].map(([a,b])=>`<div class="card" style="margin:0"><div style="color:var(--ac);margin-bottom:8px">${I('sec')}</div><h3 style="font-size:16px">${a}</h3><p class="sub" style="margin:6px 0 0">${b}</p></div>`).join('')}</div>
+<div class="card" style="max-width:520px"><h2 style="font-size:17px;margin-bottom:6px">Change PIN</h2><label>Current PIN</label><input id="op" type="password" maxlength="4" inputmode="numeric"><label>New PIN</label><input id="np" type="password" maxlength="4" inputmode="numeric"><div style="margin-top:16px"><button class="btn" onclick="chPin()">Update PIN</button></div></div>`},
+/* admin */
+rep(){const c=S.users.filter(u=>u.role==='Customer'),ok=S.tx.filter(t=>t.st==='SUCCESS'),f=S.tx.filter(t=>t.st==='FAILED'),tot=Object.values(S.wallets).reduce((a,w)=>a+w.bal,0),types=['Add Money','Transfer','Payment','Refund'].map(t=>({l:t,v:sum(ok,x=>x.type===t)})),mx=Math.max(1,...types.map(t=>t.v)),rate=S.tx.length?Math.round(ok.length/S.tx.length*100):100;
+return head('Reports','System-wide summary for administrators.')+`<div class="grid">${[['Registered users',c.length],['Total wallet balance',R(tot)],['Successful transactions',ok.length],['Failed transactions',f.length],['Pending refunds',S.refunds.filter(r=>r.st==='PENDING').length]].map(([a,b])=>`<div class="card stat"><small>${a}</small><div class="v">${b}</div></div>`).join('')}</div>
+<div class="g2"><div class="card"><h2 style="font-size:17px;margin-bottom:8px">Volume by type</h2>${types.map(t=>`<div class="row"><span style="width:90px">${t.l}</span><div class="bar"><i style="width:${t.v/mx*100}%"></i></div><b>${R(t.v)}</b></div>`).join('')}<div class="noprint" style="margin-top:14px"><button class="btn" onclick="window.print()">Print report</button></div></div>
+<div class="card"><h2 style="font-size:17px;margin-bottom:14px">Success rate</h2>${donut([{l:'Successful',v:ok.length,c:'#34e0a1'},{l:'Failed',v:f.length,c:'#ff7070'},{l:'Other',v:S.tx.length-ok.length-f.length,c:'#f6c453'}])}<p class="sub" style="margin:12px 0 0"><b style="color:var(--ac)">${rate}%</b> of transactions succeeded.</p></div></div>`},
+usr(){return head('Manage Users','View customer accounts and block or unblock access.')+`<div class="card tw"><table><tr><th>ID</th><th>Name</th><th>Email</th><th>KYC</th><th>Status</th><th></th></tr>${S.users.filter(u=>u.role==='Customer').map(u=>`<tr><td>${u.id}</td><td>${E(u.name)}</td><td>${E(u.email)}</td><td>${pill(u.kyc)}</td><td>${pill(u.blocked?'BLOCKED':'ACTIVE')}</td><td><button class="btn sm ${u.blocked?'':'red'}" onclick="blk('${u.id}')">${u.blocked?'Unblock':'Block account'}</button></td></tr>`).join('')}</table></div>`},
+wal(){return head('Manage Wallets','Freeze or reactivate customer wallets.')+`<div class="card tw"><table><tr><th>Wallet</th><th>Owner</th><th>Balance</th><th>Status</th><th></th></tr>${Object.entries(S.wallets).map(([k,w])=>`<tr><td>${w.id}</td><td>${E(nm(k))}</td><td>${R(w.bal)}</td><td>${pill(w.status)}</td><td><button class="btn sm alt" onclick="frz('${k}')">${w.status==='ACTIVE'?'Freeze':'Activate'}</button></td></tr>`).join('')}</table></div>`},
+mon(){return head('Monitor Transactions','All successful and failed activity across the system.')+`<div class="card">${txRows(S.tx,true)}</div>`},
+rfd(){return head('Process Refunds','Approve or reject customer refund requests.')+`<div class="card">${rTable(S.refunds,true)}</div>`}};
+function rTable(l,adm){return l.length?`<div class="tw"><table><tr><th>Refund</th><th>Txn</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th>${adm?'<th></th>':''}</tr>`+l.map(r=>`<tr><td>${r.id}</td><td>${r.tx}</td><td>${E(nm(r.by))}</td><td>${R(r.amt)}</td><td>${E(r.why)||'—'}</td><td>${pill(r.st)}</td>${adm?`<td>${r.st==='PENDING'?`<button class="btn sm" onclick="rf('${r.id}',1)">Approve</button> <button class="btn sm red" onclick="rf('${r.id}',0)">Reject</button>`:''}</td>`:''}</tr>`).join('')+'</table></div>':'<p class="sub">No refund requests yet.</p>'}
+/* actions */
+const amt=()=>parseFloat($('#a').value);
+function addMoney(){const a=amt();if(!(a>0))return toast('Enter an amount greater than zero.');if(W().status!=='ACTIVE')return toast('Your wallet is frozen. Contact an administrator.');
+W().bal+=a;rec('Add Money','',me.id,a,'SUCCESS');toast(R(a)+' added to your wallet.');view='dash';draw()}
+function pay(){const a=amt(),m=MER[merch][0];if(!(a>0))return toast('Enter an amount greater than zero.');
+if(W().status!=='ACTIVE')return toast('Your wallet is frozen. Contact an administrator.');
+if(a>LIMIT){rec('Payment',me.id,m,a,'FAILED');draw();return toast('Over the '+R(LIMIT).replace('.00','')+' limit. Payment rejected.')}
+if(W().bal<a){rec('Payment',me.id,m,a,'FAILED');draw();return toast('Insufficient balance. Payment rejected.')}
+W().bal-=a;rec('Payment',me.id,m,a,'SUCCESS');toast('Paid '+R(a)+' to '+m+'.');view='dash';draw()}
+function scanQR(){$('#modal').innerHTML=`<div class="modal"><div class="card"><h2 style="font-size:18px">Scanning merchant QR</h2><div class="scan"></div><p class="sub" style="margin:0">Hold steady. This is a simulated scan.</p></div></div>`;
+setTimeout(()=>{merch=Math.floor(Math.random()*MER.length);$('#modal').innerHTML='';draw();toast('Merchant detected: '+MER[merch][0]+'. Enter an amount.')},1800)}
+function pinFor(){const a=amt(),e=$('#r').value.trim().toLowerCase(),r=S.users.find(u=>u.email===e&&u.role==='Customer');
+if(!(a>0))return toast('Enter an amount greater than zero.');if(!r)return toast('That email is not a registered customer.');if(r.id===me.id)return toast('You cannot transfer to yourself.');
+if(W().status!=='ACTIVE')return toast('Your wallet is frozen. Contact an administrator.');
+if(a>LIMIT){rec('Transfer',me.id,r.id,a,'FAILED');draw();return toast('Over the '+R(LIMIT).replace('.00','')+' limit. Transfer rejected.')}
+if(W().bal<a){rec('Transfer',me.id,r.id,a,'FAILED');draw();return toast('Insufficient balance. Transfer rejected, no balances changed.')}
+$('#modal').innerHTML=`<div class="modal"><div class="card"><div style="color:var(--ac)">${I('sec')}</div><h2 style="font-size:20px;margin:6px 0">Verify PIN</h2><p class="sub" style="margin-top:4px">Confirm transfer of ${R(a)} to ${E(r.name)}.</p><input id="pin" type="password" maxlength="4" inputmode="numeric" placeholder="4-digit PIN" style="text-align:center;font-size:22px;letter-spacing:.5em" onkeydown="if(event.key==='Enter')xfer('${r.id}',${a})"><div style="margin-top:16px;display:flex;gap:8px"><button class="btn" style="flex:1" onclick="xfer('${r.id}',${a})">Confirm</button><button class="btn alt" onclick="$('#modal').innerHTML=''">Cancel</button></div></div></div>`;$('#pin').focus()}
+function xfer(rid,a){if(H($('#pin').value)!==me.pin)return toast('Incorrect PIN. Try again.');$('#modal').innerHTML='';
+const snap=JSON.stringify(S.wallets);
+try{const rw=S.wallets[rid];if(rw.status!=='ACTIVE'||U(rid).blocked)throw 0;W().bal-=a;rw.bal+=a;const t=rec('Transfer',me.id,rid,a,'SUCCESS');toast(t.id+' committed. Balance: '+R(W().bal))}
+catch(e){S.wallets=JSON.parse(snap);rec('Transfer',me.id,rid,a,'FAILED');toast('Receiver unavailable. Rolled back, no balances changed.')}
+save();view='dash';draw()}
+function chPin(){if(H($('#op').value)!==me.pin)return toast('Current PIN is incorrect.');if(!/^\d{4}$/.test($('#np').value))return toast('New PIN must be 4 digits.');me.pin=H($('#np').value);save();view='dash';draw();toast('PIN updated.')}
+function reqRefund(){const t=$('#t').value,x=S.tx.find(y=>y.id===t);if(!x)return toast('No eligible transaction to refund.');
+S.refunds.push({id:'RF-'+String(S.rseq++).padStart(3,'0'),tx:t,by:me.id,amt:x.amt,why:$('#why').value,st:'PENDING'});save();draw();toast('Refund request submitted.')}
+function rf(id,ok){const r=S.refunds.find(x=>x.id===id),t=S.tx.find(x=>x.id===r.tx);
+if(ok){S.wallets[r.by].bal+=r.amt;if(S.wallets[t.to])S.wallets[t.to].bal=Math.max(0,S.wallets[t.to].bal-r.amt);t.st='REVERSED';r.st='APPROVED';rec('Refund',t.to,r.by,r.amt,'SUCCESS')}else r.st='REJECTED';
+save();draw();toast('Refund '+r.st.toLowerCase()+'.')}
+function blk(id){const u=U(id);u.blocked=!u.blocked;save();draw();toast(u.name+(u.blocked?' blocked.':' unblocked.'))}
+function frz(k){const w=S.wallets[k];w.status=w.status==='ACTIVE'?'FROZEN':'ACTIVE';save();draw()}
+function csv(){const cell=v=> '"'+String(v??'').replace(/"/g,'""')+'"';const s=['Reference,Type,From,To,Amount,Status,Time',...mine().map(t=>[t.id,t.type,nm(t.from),nm(t.to),t.amt,t.st,t.ts].map(cell).join(','))].join('\n');
+try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s).then(()=>toast('CSV copied to clipboard.'),()=>downloadCSV(s))}else downloadCSV(s)}catch(e){downloadCSV(s)}}
+function downloadCSV(s){const blob=new Blob(['\ufeff',s],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='wallet_statement.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('CSV statement downloaded.')}
+draw();
+</script></body></html>
